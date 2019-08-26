@@ -171,3 +171,50 @@ grid.arrange(pred_gg[[1]],pred_gg[[2]],pred_gg[[3]],pred_gg[[4]],pred_gg[[5]],pr
              pred_gg[[12]],pred_gg[[13]],pred_gg[[14]],pred_gg[[15]],pred_gg[[16]],pred_gg[[17]],pred_gg[[18]],pred_gg[[19]],pred_gg[[20]],
              pred_gg[[21]],pred_gg[[22]],pred_gg[[23]],pred_gg[[24]],pred_gg[[25]],ncol=5, nrow =5)
 
+
+# Use regression analysis on weather data obtained through idw interpolation.
+# ----------------------------------------------------------------------------
+
+# Data processing for Regression analysis
+all_cl<-read.csv("IDW_bike_location.csv") # IDW weather data from bike road coordinates
+all_cl_na<-all_cl[-c(1,2)]
+colnames(all_cl_na)<-NA
+all_df<-rbind(all_cl_na[1:5],all_cl_na[6:10])
+
+for(i in seq(11,(length(all_cl_na)),5)){
+  print(i)
+  j=i+4
+  all_df<-rbind(all_df,all_cl_na[i:j])
+}
+
+colnames(all_df)<-c("temp","rain","humid","pm10","solar") # Convet to 5 column Data frame
+head(all_df)
+
+# Create train/test set
+idx<-sample(nrow(all_df),nrow(all_df)*0.7)
+(nrow(all_df)*0.3)*3
+train<-all_df[idx,]
+test<-all_df[-idx,]
+
+# Create model
+model<-lm(solar~.,data=train)
+summary(model)
+
+# Check and remove multicollinearity.
+library(car)
+vif(model)
+sqrt(vif(model))>2
+
+# Prediction
+pre_solar<-predict(model,newdata = test[-5])
+pre_solar<-as.data.frame(pre_solar)
+
+# Visualization
+library(ggplot2)
+library(dplyr)
+library(zoo)# Package for using the index function.
+
+dev.off()
+# Regression analysis predictions are not good.
+ggplot(pre_solar,aes(x=index(pre_solar),y=pre_solar))+ geom_line(color="red")+
+  geom_line(aes(x=index(pre_solar),y=test$solar),color="blue")
