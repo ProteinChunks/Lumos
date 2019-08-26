@@ -122,10 +122,6 @@ rownames(population) <- c(1:25)                            #Revising row numbers
 
 population <- arrange(population, location)      #Sorting rows by 'location' column.
 
-# Make an integrated csv file: population_density.csv
-write.csv(population, "population_density.csv")
-
-
 # 'population_density.csv''s column information: 
 #   location: District of Seoul city
 #   population: The number of local people + foreigner
@@ -134,3 +130,5 @@ write.csv(population, "population_density.csv")
 #   working_pop_density_km^2: The working population density of the district(persons/km^2)
 #   floating_pop_density_km^2: The floating population density of the district(persons/km^2)
 #   resident_pop_density_km^2: The resident population density of the district(persons/km^2)
+# Make an integrated csv file: population_density.csv
+write.csv(population, "population_density.csv")
