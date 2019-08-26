@@ -1,3 +1,5 @@
+### Preprocessing the ETC data
+## Preprocessing the park data
 #1. Classified by the distance of bike roads and parks.
 #-----------------------------------
 # Load parks of Seoul coordinates data.
@@ -53,6 +55,7 @@ points(x=dis_df_1$pk_long[1:10], y=dis_df_1$pk_lat[1:10])
 points(x=dis_df_1$bi_long[1],y=dis_df_1$bi_lat[1],col="red")
 
 #----------------------------------------------------------------------
+
 # Store all bi_cens through a list.
 dis_list<-list()
 c=1
