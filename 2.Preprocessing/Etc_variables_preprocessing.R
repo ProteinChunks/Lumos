@@ -76,3 +76,61 @@ for(i in 1:nrow(bi_cen)){
   points(x=dis_list[[i]]$pk_long[1:5], y=dis_list[[i]]$pk_lat[1:5],col=i,pch=i)
 }
 points(x=dis_df$bi_long,y=dis_df$bi_lat,col="red",cex=1.2,pch=19)
+
+#----------------------------------------------------------------------
+# 2. Make a population density file: floating population density, resident population density, working population density.
+
+
+# Load popuatlion density data of Seoul(2018).
+all_pop_seoul <- read.csv("./datas/seoul_density_2018(km2).csv", header=T, sep = ',')
+
+colnames(all_pop_seoul) <- c('year', 'location', 'population', 'area(km^2)', 'population_density_km^2')
+all_pop_seoul <- all_pop_seoul[-1, ]     #Delete an unnecessary row(total).
+
+
+# Load the number of floating population, resident population, working population datas.
+# And spearate them respectively.
+library(dplyr)
+kind_of_population <- read.csv("./datas/float,resident,working_population_2018(ha).csv", header=T, sep=',')
+kind_of_population <- kind_of_population[-1, ]     #Delete an unnecessary row(total).
+
+# Floating population density
+floating_pop_density <- kind_of_population[, c(1, 2, 3, 4, 5)]
+floating_pop_density[, c(2:5)] <- floating_pop_density[, c(2:5)] * 100     #Convert the unit of fraction: hectare(h) -> square kilometer(km^2)
+floating_pop_density <- mutate(floating_pop_density, 
+                               density = (X181Q유동인구 + X182Q유동인구 + X183Q유동인구 + X184Q유동인구) / 4)
+
+# Resident population density
+resident_pop_density <- kind_of_population[, c(1, 6, 7, 8, 9)]
+resident_pop_density[, c(2:5)] <- resident_pop_density[, c(2:5)] * 100     #Convert the unit of fraction: hectare(h) -> square kilometer(km^2)
+resident_pop_density <- mutate(resident_pop_density, 
+                               density = (X181Q주거인구 + X182Q주거인구 + X183Q주거인구 + X184Q주거인구) / 4)
+
+# Working population density
+working_pop_density <- kind_of_population[, c(1, 10, 11, 12, 13)]
+working_pop_density[, c(2:5)] <- working_pop_density[, c(2:5)] * 100     #Convert the unit of fraction: hectare(h) -> square kilometer(km^2)
+working_pop_density <- mutate(working_pop_density, 
+                              density = (X181Q직장인구 + X182Q직장인구 + X183Q직장인구 + X184Q직장인구) / 4)
+
+# Merge 3 kinds of population density into one file
+population <- cbind(all_pop_seoul, working_pop_density[, 6], floating_pop_density[, 6], resident_pop_density[, 6])
+
+colnames(population)[6] <- c("working_pop_density_km^2")   #Revising column names.
+colnames(population)[7] <- c("floating_pop_density_km^2")
+colnames(population)[8] <- c("resident_pop_density_km^2")
+rownames(population) <- c(1:25)                            #Revising row numbers.
+
+population <- arrange(population, location)      #Sorting rows by 'location' column.
+
+# Make an integrated csv file: population_density.csv
+write.csv(population, "population_density.csv")
+
+
+# 'population_density.csv''s column information: 
+#   location: District of Seoul city
+#   population: The number of local people + foreigner
+#   area: Area of the district(km^2)
+#   population_density_km^2: The population density of the district(persons/km^2)
+#   working_pop_density_km^2: The working population density of the district(persons/km^2)
+#   floating_pop_density_km^2: The floating population density of the district(persons/km^2)
+#   resident_pop_density_km^2: The resident population density of the district(persons/km^2)
