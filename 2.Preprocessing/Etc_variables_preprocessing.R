@@ -1,4 +1,76 @@
-#1. Classified by the distance of bike roads and parks.
+# 1.Preprocess bike road coordinates
+library(sf)
+library(raster)
+library(ggplot2)
+library(reprex)
+library(tidyverse)
+library(rgdal)
+library(dplyr)
+library(doBy)
+bike<-readOGR("bcycl_track_W.shp") # Load Seoul bike road shp file
+
+plot(bike)
+bike_location<-fortify(bike) # Convert to Data frame
+
+# Add address in bike_location data frame using Geocoder-Xr 2019 v3.5
+# ---------------------------------------------------------------------------
+bike_location<-read.csv("bike_location.shp.csv") # Bike road coordinates with address
+
+# extract part of address
+bike_location_gu<-data.frame(long=bike_location$long, lat=bike_location$lat, gu=substr(bike_location$도로명주소,1,9))
+
+# Except "경기도"
+bike_location<-bike_location%>%filter(substr(도로명주소,1,3)!="경기도")
+
+# extract district name
+bike_location_gu<-data.frame(long=bike_location$long, lat=bike_location$lat, gu=substr(bike_location$도로명주소,7,9))
+col_gu<-colors()[50:90]
+# visualize bike road by district
+plot(x=bike_location_gu$long,y=bike_location_gu$lat, col=col_gu[bike_location_gu$gu], cex=0.5)
+
+# Sampling bike road coordinates for data minimize.
+# --------------------------------------------------
+# 41094 -> 20000 Sampling
+idx<-sample(nrow(bike_location),20000) 
+bike_loc_0.5<-bike_location[idx,]
+plot(bike_loc_0.5$long, bike_loc_0.5$lat) # too many coordinates
+
+# 41094 -> 10000 Sampling
+idx<-sample(nrow(bike_loc_gu), 10000)
+bike10000<-bike_loc_gu[idx,]
+plot(bike10000$long, bike10000$lat)
+plot(bike_half$long, bike_half$lat) # too many loss
+
+# More sampling using 20000 sampling data
+bike_loc_0.5<-ifelse(row(bike_location)%%5==0,c(bike_location$long,bike_location$lat),NA)
+bike_loc_0.5<-na.omit(bike_loc_0.5)
+df<-data.frame()
+df<-rbind(bike_loc_0.5[,c(1,2)],bike_loc_0.5[,c(3,4)])
+df<-rbind(df,bike_loc_0.5[,c(5,6)])
+colnames(df)<-c("long","lat")
+df<-as.data.frame(df)
+plot(df$long,df$lat) # high loss, too
+
+# Sample by doby library (extraction by id or group) 
+train_gu <- sampleBy(~ gu, frac = 0.5, replace = FALSE, data = bike_loc_gu) # using district
+train_id <- sampleBy(~ id, frac = 0.5, systematic = TRUE, data = bike_location) # using shp polygon id
+train_gr <- sampleBy(~ group, frac = 0.5, systematic = TRUE, data = bike_location) # using shp plygon group
+
+plot(train_gu$long,train_gu$lat)
+plot(train_id$long,train_id$lat) # The most even distribution is shown.
+plot(train_gr$long,train_gr$lat)
+
+#write.csv(train_id,"bike_half.csv",row.names = F)
+
+# Bike road width and area data extract
+# ---------------------------------------------------------------
+bike_width_area<-read.csv("bike_road_width_area.csv")
+bike_wa<-bike_width_area[2:4]
+bike_wa_g<-bike_wa%>%group_by(자치구명)%>%summarise(length=sum(도로길이),width=mean(도로폭))
+
+#write.csv(bike_wa_g,"구별_자전거도로_길이_폭.csv",row.names=F)
+
+# 2.Classified by the distance of bike roads and parks.
 #-----------------------------------
 # Load parks of Seoul coordinates data.
 park1 <- read.csv("서울시 주요 공원현황.csv")
@@ -6,7 +78,7 @@ park1$지역 <- as.character(park1$지역)
 park1_loc <- park1 %>% select(k2, 공원명, 면적, 지역, 경도=X좌표.WGS84., 위도=Y좌표.WGS84.)
 park1_loc<-as.data.frame(park1_loc)
 
-#3. Load bike road coordinates data.
+# Load bike road coordinates data.
 library(dplyr)
 bike<-read.csv("bike_location.csv")
 bike_loc<-bike%>%select(long,lat,id)
@@ -78,7 +150,7 @@ for(i in 1:nrow(bi_cen)){
 points(x=dis_df$bi_long,y=dis_df$bi_lat,col="red",cex=1.2,pch=19)
 
 #----------------------------------------------------------------------
-# 2. Make a population density file: floating population density, resident population density, working population density.
+# 3. Make a population density file: floating population density, resident population density, working population density.
 
 
 # Load popuatlion density data of Seoul(2018).
