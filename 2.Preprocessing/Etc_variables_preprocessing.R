@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 ### Preprocessing the ETC data
-## Preprocessing the park data
-#1. Classified by the distance of bike roads and parks.
-=======
-# 1.Preprocess bike road coordinates
 library(sf)
 library(raster)
 library(ggplot2)
@@ -12,8 +7,10 @@ library(tidyverse)
 library(rgdal)
 library(dplyr)
 library(doBy)
-bike<-readOGR("bcycl_track_W.shp") # Load Seoul bike road shp file
 
+## 1.Preprocess bike road coordinates
+#-----------------------------------
+bike<-readOGR("bcycl_track_W.shp") # Load Seoul bike road shp file
 plot(bike)
 bike_location<-fortify(bike) # Convert to Data frame
 
@@ -72,11 +69,10 @@ plot(train_gr$long,train_gr$lat)
 bike_width_area<-read.csv("bike_road_width_area.csv")
 bike_wa<-bike_width_area[2:4]
 bike_wa_g<-bike_wa%>%group_by(자치구명)%>%summarise(length=sum(도로길이),width=mean(도로폭))
-
 #write.csv(bike_wa_g,"구별_자전거도로_길이_폭.csv",row.names=F)
 
-# 2.Classified by the distance of bike roads and parks.
->>>>>>> 4e519a876250d4153b8ca6939ddadb3d3dd51ec2
+
+## 2.Classified by the distance of bike roads and parks.
 #-----------------------------------
 # Load parks of Seoul coordinates data.
 park1 <- read.csv("서울시 주요 공원현황.csv")
@@ -156,9 +152,9 @@ for(i in 1:nrow(bi_cen)){
 }
 points(x=dis_df$bi_long,y=dis_df$bi_lat,col="red",cex=1.2,pch=19)
 
-#----------------------------------------------------------------------
-# 3. Make a population density file: floating population density, resident population density, working population density.
 
+## 3. Make a population density file: floating population density, resident population density, working population density.
+#----------------------------------------------------------------------
 
 # Load popuatlion density data of Seoul(2018).
 all_pop_seoul <- read.csv("./datas/seoul_density_2018(km2).csv", header=T, sep = ',')
@@ -211,3 +207,81 @@ population <- arrange(population, location)      #Sorting rows by 'location' col
 #   resident_pop_density_km^2: The resident population density of the district(persons/km^2)
 # Make an integrated csv file: population_density.csv
 write.csv(population, "population_density.csv")
+
+
+## 4. Classified the security light data
+#-----------------------------------
+# Extract the security light around the bike road
+# Load the coordinate of security light.csv and coordindate of buildings in Seoul
+light<-read.csv("security_light.csv")
+gu<-read.csv("seoul_city_centre_day.csv")
+gu<-gu[c(order(gu$loc)),]
+gu
+
+# Reverse the Security light data
+light<-cbind(light,loc = gu$loc)
+func<-function(x){
+  x = 19344 - x  # maxinum number of security light - current security light in each Seoul district
+  return(x)
+}
+light$x<-lapply(light$x, function(x) { x = 19344 - x; return(x) })
+colnames(light)<-c("loc","count")
+light<-as.data.frame(light)
+
+#write.csv(light,"security_light_reverse.csv",row.names = F)
+
+
+## 5. Classified the building data
+#-----------------------------------
+read.csv("bh_sp_2.csv")
+bike_half_compl<-read.csv("bike_half_compl.csv")
+bh_loc<-read.csv("bh_loc_2.csv")
+
+## Split coordindate of buildings by Seoul district
+bh_loc$gu<-as.character(bh_loc$gu)
+bh_loc_spl<-split(bh_loc,bh_loc$gu)
+
+## Split coordindate of bike roads by Seoul district
+bh_sp_2<-data.frame()
+bike_half_list<-split(bike_half_compl,bike_half_compl$지번주소)
+
+# Make the list for coordindate of buildings 
+nrow(bh_loc_spl[[1]])
+height_list <- list(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+
+# Get coordindate of buildings where near the bicycle road
+colnames(height)<-c("long","lat","height")
+for(k in 1:25){
+  for(i in 1:nrow(bh_loc_spl[[k]])){
+    print(i)
+    for(j in 1:nrow(bike_half_list[[k]])){
+      if(((bh_loc_spl[[k]]$long[i] > bike_half_list[[k]]$long[j]*24999/25000) & 
+          (bh_loc_spl[[k]]$long[i] < bike_half_list[[k]]$long[j]*25001/25000)) & 
+         ((bh_loc_spl[[k]]$lat[i] > bike_half_list[[k]]$lat[j]*24999/25000) & 
+          (bh_loc_spl[[k]]$lat[i] < bike_half_list[[k]]$lat[j]*25001/25000)))
+      {
+        df<-data.frame(long=bh_loc_spl[[k]]$long[i],lat=bh_loc_spl[[k]]$lat[i],height=bh_loc_spl[[k]]$height[i])
+        height_list[[k]] <- rbind(height_list[[k]],df)
+        break
+      }
+    }
+  }
+}
+
+# Remove the temporary data '1'
+hl<-height_list
+for(i in 1:25){
+  hl[[i]]<-hl[[i]][-1,]
+}
+
+# Add the Seoul district as number in the coordinate of buildings and make it as dataframe
+hl_df<-list.cbind(hl)
+for(i in 1:25){
+  hl[[i]]$id<-i
+}
+hl_df<-list.rbind(hl)
+#write.csv(hl_df,"hl_df.csv",row.names = F)
+
+
+## 6. Classified the bus station and subway station data
+#-----------------------------------
