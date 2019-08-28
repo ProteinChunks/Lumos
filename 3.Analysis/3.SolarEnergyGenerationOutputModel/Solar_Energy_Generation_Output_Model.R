@@ -765,5 +765,5 @@ colnames(kw_gu_total)[1] <- "loc"
 
 #columns informations: 
 ##  loc: Names of 25 districts of Seoul city.
-##  gen_0, gen_1, ... gen_36: Monthly expected energy generate of each district(from 1st month ~ 36th month).
+##  gen_0, gen_1, ... gen_36: Monthly expected energy generate of each district(1st month ~ 36th month).
 write.csv(kw_gu_total, "kw_gu_total.csv")
