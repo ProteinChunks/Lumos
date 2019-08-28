@@ -19,13 +19,13 @@ bike_location<-fortify(bike) # Convert to Data frame
 bike_location<-read.csv("bike_location.shp.csv") # Bike road coordinates with address
 
 # extract part of address
-bike_location_gu<-data.frame(long=bike_location$long, lat=bike_location$lat, gu=substr(bike_location$ë„ë¡œëª…ì£¼ì†Œ,1,9))
+bike_location_gu<-data.frame(long=bike_location$long, lat=bike_location$lat, gu=substr(bike_location$?„ë¡œëª…ì£¼ì†Œ,1,9))
 
-# Except "ê²½ê¸°ë„"
-bike_location<-bike_location%>%filter(substr(ë„ë¡œëª…ì£¼ì†Œ,1,3)!="ê²½ê¸°ë„")
+# Except "ê²½ê¸°?„"
+bike_location<-bike_location%>%filter(substr(?„ë¡œëª…ì£¼ì†Œ,1,3)!="ê²½ê¸°?„")
 
 # extract district name
-bike_location_gu<-data.frame(long=bike_location$long, lat=bike_location$lat, gu=substr(bike_location$ë„ë¡œëª…ì£¼ì†Œ,7,9))
+bike_location_gu<-data.frame(long=bike_location$long, lat=bike_location$lat, gu=substr(bike_location$?„ë¡œëª…ì£¼ì†Œ,7,9))
 col_gu<-colors()[50:90]
 # visualize bike road by district
 plot(x=bike_location_gu$long,y=bike_location_gu$lat, col=col_gu[bike_location_gu$gu], cex=0.5)
@@ -68,16 +68,16 @@ plot(train_gr$long,train_gr$lat)
 # ---------------------------------------------------------------
 bike_width_area<-read.csv("bike_road_width_area.csv")
 bike_wa<-bike_width_area[2:4]
-bike_wa_g<-bike_wa%>%group_by(ìì¹˜êµ¬ëª…)%>%summarise(length=sum(ë„ë¡œê¸¸ì´),width=mean(ë„ë¡œí­))
-#write.csv(bike_wa_g,"êµ¬ë³„_ìì „ê±°ë„ë¡œ_ê¸¸ì´_í­.csv",row.names=F)
+bike_wa_g<-bike_wa%>%group_by(?ì¹˜êµ¬ëª?)%>%summarise(length=sum(?„ë¡œê¸¸?´),width=mean(?„ë¡œí­))
+#write.csv(bike_wa_g,"êµ¬ë³„_?? „ê±°ë„ë¡?_ê¸¸ì´_?­.csv",row.names=F)
 
 
 ## 2.Classified by the distance of bike roads and parks.
 #-----------------------------------
 # Load parks of Seoul coordinates data.
-park1 <- read.csv("ì„œìš¸ì‹œ ì£¼ìš” ê³µì›í˜„í™©.csv")
-park1$ì§€ì—­ <- as.character(park1$ì§€ì—­)
-park1_loc <- park1 %>% select(k2, ê³µì›ëª…, ë©´ì , ì§€ì—­, ê²½ë„=Xì¢Œí‘œ.WGS84., ìœ„ë„=Yì¢Œí‘œ.WGS84.)
+park1 <- read.csv("?„œ?š¸?‹œ ì£¼ìš” ê³µì›?˜„?™©.csv")
+park1$ì§€?—­ <- as.character(park1$ì§€?—­)
+park1_loc <- park1 %>% select(k2, ê³µì›ëª?, ë©´ì , ì§€?—­, ê²½ë„=Xì¢Œí‘œ.WGS84., ?œ„?„=Yì¢Œí‘œ.WGS84.)
 park1_loc<-as.data.frame(park1_loc)
 
 # Load bike road coordinates data.
@@ -173,19 +173,19 @@ kind_of_population <- kind_of_population[-1, ]     #Delete an unnecessary row(to
 floating_pop_density <- kind_of_population[, c(1, 2, 3, 4, 5)]
 floating_pop_density[, c(2:5)] <- floating_pop_density[, c(2:5)] * 100     #Convert the unit of fraction: hectare(h) -> square kilometer(km^2)
 floating_pop_density <- mutate(floating_pop_density, 
-                               density = (X181Qìœ ë™ì¸êµ¬ + X182Qìœ ë™ì¸êµ¬ + X183Qìœ ë™ì¸êµ¬ + X184Qìœ ë™ì¸êµ¬) / 4)
+                               density = (X181Q?œ ?™?¸êµ? + X182Q?œ ?™?¸êµ? + X183Q?œ ?™?¸êµ? + X184Q?œ ?™?¸êµ?) / 4)
 
 # Resident population density
 resident_pop_density <- kind_of_population[, c(1, 6, 7, 8, 9)]
 resident_pop_density[, c(2:5)] <- resident_pop_density[, c(2:5)] * 100     #Convert the unit of fraction: hectare(h) -> square kilometer(km^2)
 resident_pop_density <- mutate(resident_pop_density, 
-                               density = (X181Qì£¼ê±°ì¸êµ¬ + X182Qì£¼ê±°ì¸êµ¬ + X183Qì£¼ê±°ì¸êµ¬ + X184Qì£¼ê±°ì¸êµ¬) / 4)
+                               density = (X181Qì£¼ê±°?¸êµ? + X182Qì£¼ê±°?¸êµ? + X183Qì£¼ê±°?¸êµ? + X184Qì£¼ê±°?¸êµ?) / 4)
 
 # Working population density
 working_pop_density <- kind_of_population[, c(1, 10, 11, 12, 13)]
 working_pop_density[, c(2:5)] <- working_pop_density[, c(2:5)] * 100     #Convert the unit of fraction: hectare(h) -> square kilometer(km^2)
 working_pop_density <- mutate(working_pop_density, 
-                              density = (X181Qì§ì¥ì¸êµ¬ + X182Qì§ì¥ì¸êµ¬ + X183Qì§ì¥ì¸êµ¬ + X184Qì§ì¥ì¸êµ¬) / 4)
+                              density = (X181Qì§ì¥?¸êµ? + X182Qì§ì¥?¸êµ? + X183Qì§ì¥?¸êµ? + X184Qì§ì¥?¸êµ?) / 4)
 
 # Merge 3 kinds of population density into one file
 population <- cbind(all_pop_seoul, working_pop_density[, 6], floating_pop_density[, 6], resident_pop_density[, 6])
@@ -243,7 +243,7 @@ bh_loc_spl<-split(bh_loc,bh_loc$gu)
 
 ## Split coordindate of bike roads by Seoul district
 bh_sp_2<-data.frame()
-bike_half_list<-split(bike_half_compl,bike_half_compl$ì§€ë²ˆì£¼ì†Œ)
+bike_half_list<-split(bike_half_compl,bike_half_compl$ì§€ë²ˆì£¼?†Œ)
 
 # Make the list for coordindate of buildings 
 nrow(bh_loc_spl[[1]])
@@ -285,3 +285,94 @@ hl_df<-list.rbind(hl)
 
 ## 6. Classified the bus station and subway station data
 #-----------------------------------
+library(dplyr)
+### Extract sus stations and subway stations near bicycle roads
+## Load bicycle road locations, bus stations and subway stations
+bhc <- read.csv("bike_half_compl.csv")
+bus <- read.csv("bus3_2.csv")
+sub <- read.csv("sub3_2.csv")
+
+## Split by Seoul districts
+bhc_list  <-split(bhc, bhc$Áö¹øÁÖ¼Ò)
+bus_list <- split(bus, bus$addr)
+sub_list <- split(sub, sub$addr)
+
+## Make list which is bus stations and subway stations near bicycle road
+bus_bhc_list <- list(1:25)
+sub_bhc_list <- list(1:25)
+
+## Preprocessing the bus statons data
+# Get the bus stations where near the bicycle road
+for(k in 1:25){
+  for(i in 1:nrow(bus_list[[k]])){
+    print(i)
+    for(j in 1:nrow(bhc_list[[k]])){
+      if(((bus_list[[k]]$bus3.long[i] > bhc_list[[k]]$long[j]*999999/1000000) & 
+          (bus_list[[k]]$bus3.long[i] < bhc_list[[k]]$long[j]*100001/100000)) & 
+         ((bus_list[[k]]$bus3.lat[i] > bhc_list[[k]]$lat[j]*999999/1000000) & 
+          (bus_list[[k]]$bus3.lat[i] < bhc_list[[k]]$lat[j]*1000001/1000000)))
+      {
+        df<-data.frame(long=bus_list[[k]]$bus3.long[i],lat=bus_list[[k]]$bus3.lat[i], loc=bus_list[[k]]$addr)
+        bus_bhc_list[[k]] <- rbind(bus_bhc_list[[k]],df)
+        break
+      }
+    }
+  }
+}
+
+# Remove the duplicate data
+for(i in 1:25){bus_bhc_list[[i]] <- unique(bus_bhc_list[[i]])}
+
+# Remove the null data
+for(i in 1:25){bus_bhc_list[[i]]<-na.omit(bus_bhc_list[[i]])}
+
+# Check whether the bus stations which were gathered are near the bicycle road or not
+plot(bus_bhc_list[[1]]$long, bus_bhc_list[[1]]$lat)
+points(bus_list[[1]]$bus3.long, bus_list[[1]]$bus3.lat, col = "red")
+bus_bhc_df <- rbind(bus_bhc_list[[1]], bus_bhc_list[[2]])
+for(i in 3:25){
+  bus_bhc_df <- rbind(bus_bhc_df, bus_bhc_list[[i]])
+}
+plot(x = bus_bhc_list[[1]]$long, y= bus_bhc_list[[1]]$lat)
+
+## Preprocessing the subway statons data
+# Get the subway stations where near the bicycle road
+for(k in 1:25){
+  for(i in 1:nrow(sub_list[[k]])){
+    print(i)
+    for(j in 1:nrow(bhc_list[[k]])){
+      if(((sub_list[[k]]$long[i] > bhc_list[[k]]$long[j]*999999/1000000) & 
+          (sub_list[[k]]$long[i] < bhc_list[[k]]$long[j]*1000001/1000000)) & 
+         ((sub_list[[k]]$lat[i] > bhc_list[[k]]$lat[j]*999999/1000000) & 
+          (sub_list[[k]]$lat[i] < bhc_list[[k]]$lat[j]*1000001/1000000)))
+      {
+        df<-data.frame(long=sub_list[[k]]$long[i], lat=sub_list[[k]]$lat[i], loc=sub_list[[k]]$addr)
+        sub_bhc_list[[k]] <- rbind(sub_bhc_list[[k]],df)
+        break
+      }
+    }
+  }
+}
+
+# Remove the duplicate data
+for(i in 1:25){sub_bhc_list[[i]] <- unique(sub_bhc_list[[i]])}
+
+# Remove the null data
+for(i in 1:25){sub_bhc_list[[i]]<-na.omit(sub_bhc_list[[i]])}
+
+
+# Check whether the subway stations which were gathered are near the bicycle road or not
+plot(sub_bhc_list[[10]]$long, sub_bhc_list[[10]]$lat)
+points(sub_list[[10]]$long, sub_list[[10]]$lat, col = "red")
+sub_bhc_df <- rbind(sub_bhc_list[[1]], sub_bhc_list[[2]])
+for(i in 3:25){
+  sub_bhc_df <- rbind(sub_bhc_df, sub_bhc_list[[i]])
+}
+plot(x = sub_list[[1]]$long, y = sub_list[[1]]$lat)
+points(x= bhc_list[[1]]$long, y= bhc_list[[1]]$lat, col="red")
+sub_bhc_list[[1]]<-na.omit(sub_bhc_list[[1]])
+plot(x = sub_bhc_list[[1]]$long, y= sub_bhc_list[[1]]$lat)
+
+# Classify the data with Seoul districts
+sub_bhc_df_num <- data.frame(table(sub_bhc_df$loc))
+bus_bhc_df_num <- data.frame(table(bus_bhc_df$loc))
