@@ -752,7 +752,6 @@ kw_gu_total <- rbind(kw_gu_total, kw_junggu_list_cbind)
 kw_gu_total <- rbind(kw_gu_total, kw_jungnang_list_cbind)
 
 View(kw_gu_total)
-#kw_gu_total_2 <- kw_gu_total
 
 for(i in 2:37){
   j=i-1
@@ -762,6 +761,9 @@ for(i in 2:37){
 kw_gu_total<-as.data.frame(kw_gu_total)
 class(kw_gu_total)
 colnames(kw_gu_total)[1] <- "loc"
-write.csv(kw_gu_total, "kw_gu_total.csv")
 
-#C:\WORK_R\git 까지 들어와서 "Lumon"폴더에 우클릭 후 git bash했음. 
+
+#columns informations: 
+##  loc: Names of 25 districts of Seoul city.
+##  gen_0, gen_1, ... gen_36: Monthyl expected energy generate from 1st month ~ 36th month.
+write.csv(kw_gu_total, "kw_gu_total.csv")
