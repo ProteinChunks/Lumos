@@ -1,0 +1,20 @@
+-BEGIN HEADER-
+NASA/POWER SRB/FLASHFlux/MERRA2/GEOS 5.12.4 (FP-IT) 0.5 x 0.5 Degree Interannual Averages/Sums 
+Dates (month/day/year): 01/01/2010 through 12/31/2018 
+Location: Latitude  37.5475   Longitude 127.1491 
+Elevation from MERRA-2: Average for 1/2x1/2 degree lat/lon region = 200.73 meters   Site = na 
+Climate zone: na (reference Briggs et al: http://www.energycodes.gov) 
+Value for missing model data cannot be computed or out of model availability range: -999 
+Parameter(s): 
+ALLSKY_SFC_LW_DWN SRB/FLASHFlux 1/2x1/2 Downward Thermal Infrared (Longwave) Radiative Flux (kW-hr/m^2/day) 
+-END HEADER-
+LAT,LON,PARAMETER,YEAR,JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC,ANN
+37.54751,127.14911,ALLSKY_SFC_LW_DWN,2010,              5.37,              5.98,              6.63,              6.89,              7.98,              8.98,             10.22,             10.49,              9.16,              7.42,              6.30,              5.73,              7.61
+37.54751,127.14911,ALLSKY_SFC_LW_DWN,2011,              4.88,              5.82,              5.83,              7.00,              8.02,              9.11,             10.14,             10.05,              8.68,              7.25,              7.36,              5.61,              7.49
+37.54751,127.14911,ALLSKY_SFC_LW_DWN,2012,              5.31,              5.26,              6.44,              7.15,              8.01,              9.04,             10.01,             10.16,              8.72,              7.34,              6.46,              5.37,              7.45
+37.54751,127.14911,ALLSKY_SFC_LW_DWN,2013,              5.32,              5.54,              6.00,              6.88,              7.88,              9.01,             10.09,              9.78,              8.63,              7.15,              6.29,              5.68,              7.37
+37.54751,127.14911,ALLSKY_SFC_LW_DWN,2014,              5.34,              5.73,              6.28,              7.15,              7.67,              9.10,              9.78,              9.62,              8.38,              7.16,              6.52,              5.24,              7.34
+37.54751,127.14911,ALLSKY_SFC_LW_DWN,2015,              5.49,              5.70,              5.81,              7.22,              7.72,              8.89,              9.82,              9.57,              8.36,              7.25,              7.28,              5.97,              7.43
+37.54751,127.14911,ALLSKY_SFC_LW_DWN,2016,              5.27,              5.61,              6.22,              7.21,              7.79,              8.92,              9.86,              9.87,              8.93,              7.74,              6.50,              5.96,              7.50
+37.54751,127.14911,ALLSKY_SFC_LW_DWN,2017,              5.41,              5.40,              6.03,              7.00,              7.84,              8.74,             10.19,              9.78,              8.24,              7.58,              6.21,              5.42,              7.33
+37.54751,127.14911,ALLSKY_SFC_LW_DWN,2018,              5.17,              5.27,              6.62,              7.18,              8.07,              8.86,              9.91,             10.13,              8.39,              6.94,              6.41,              5.41,              7.38
